@@ -113,19 +113,6 @@ export default function PracticeScreen() {
         onSelectType={setSelectedDrillType}
       />
 
-      <View style={styles.quickStartContainer}>
-        <TouchableOpacity 
-          style={styles.quickStartButton}
-          onPress={() => setSetupModalVisible(true)}
-        >
-          <Play size={20} color={colors.white} />
-          <Text style={styles.quickStartText}>Free Practice</Text>
-        </TouchableOpacity>
-        <Text style={styles.quickStartSubtext}>
-          Start a custom session with tee or soft toss
-        </Text>
-      </View>
-      
       <ScrollView 
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
@@ -140,6 +127,15 @@ export default function PracticeScreen() {
           ))}
         </View>
       </ScrollView>
+
+      {/* Floating Action Button */}
+      <TouchableOpacity 
+        style={styles.fab}
+        onPress={() => setSetupModalVisible(true)}
+      >
+        <Play size={24} color={colors.white} />
+        <Text style={styles.fabText}>Free Practice</Text>
+      </TouchableOpacity>
       
       <SessionSetupModal 
         visible={setupModalVisible} 
@@ -191,36 +187,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     gap: 16,
+    paddingBottom: 100, // Add padding to account for FAB
   },
-  quickStartContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey[100],
-  },
-  quickStartButton: {
-    flexDirection: 'row',
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
     backgroundColor: colors.status.error,
     borderRadius: 30,
     paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     shadowColor: colors.status.error,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 5,
   },
-  quickStartText: {
-    ...typography.button,
+  fabText: {
+    fontFamily: 'Barlow-Bold',
+    fontSize: 16,
     color: colors.white,
     marginLeft: 12,
-  },
-  quickStartSubtext: {
-    ...typography.body2,
-    color: colors.grey[400],
-    textAlign: 'center',
-    marginTop: 8,
   },
 });
