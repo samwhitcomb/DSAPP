@@ -10,6 +10,7 @@ interface PracticeCardProps {
     focus: string;
     time: string;
     type: 'tee' | 'soft-toss';
+    drillType: 'DRILL' | 'LADDER';
     image: string;
   };
   onPress: () => void;
@@ -27,7 +28,15 @@ export function PracticeCard({ drill, onPress }: PracticeCardProps) {
       
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>{drill.title}</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{drill.title}</Text>
+            <View style={[
+              styles.drillTypeTag,
+              drill.drillType === 'LADDER' ? styles.ladderTag : styles.drillTag
+            ]}>
+              <Text style={styles.drillTypeText}>{drill.drillType}</Text>
+            </View>
+          </View>
           <View style={styles.tagContainer}>
             <View style={styles.typeTag}>
               <Text style={styles.typeText}>
@@ -81,10 +90,32 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 8,
   },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   title: {
     ...typography.h3,
     color: colors.white,
     flex: 1,
+    marginRight: 8,
+  },
+  drillTypeTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  drillTag: {
+    backgroundColor: colors.secondary.neonGreen,
+  },
+  ladderTag: {
+    backgroundColor: colors.secondary.indigo,
+  },
+  drillTypeText: {
+    ...typography.caption,
+    fontFamily: 'Barlow-Bold',
+    color: colors.white,
   },
   tagContainer: {
     flexDirection: 'row',

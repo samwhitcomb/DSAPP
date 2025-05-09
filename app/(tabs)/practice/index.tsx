@@ -22,11 +22,12 @@ export default function PracticeScreen() {
     {
       id: '1',
       title: 'Launch Angle Ladder',
-      description: 'Hit balls at progressively higher angles: 10°, 15°, 20°',
+      description: 'Progress through increasingly challenging launch angle targets',
       focus: 'Trajectory Control',
       time: '15 min',
       type: 'tee',
-      image: 'https://images.pexels.com/photos/5769387/pexels-photo-5769387.jpeg?auto=compress&cs=tinysrgb&w=300',
+      drillType: 'LADDER',
+      image: 'https://images.pexels.com/photos/5769387/pexels-photo-5769387.jpeg',
       setup: [
         'Position tee at belt height',
         'Place alignment rod parallel to target line',
@@ -47,7 +48,8 @@ export default function PracticeScreen() {
       focus: 'Power',
       time: '20 min',
       type: 'soft-toss',
-      image: 'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg?auto=compress&cs=tinysrgb&w=300',
+      drillType: 'DRILL',
+      image: 'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg',
       setup: [
         'Partner positioned 45° angle, 3-4 feet away',
         'Use weighted balls for warm-up sets',
@@ -61,6 +63,50 @@ export default function PracticeScreen() {
         'Progressive increase in average exit velocity'
       ]
     },
+    {
+      id: '3',
+      title: 'Contact Point Mastery',
+      description: 'Perfect your contact point for optimal ball flight',
+      focus: 'Technique',
+      time: '25 min',
+      type: 'tee',
+      drillType: 'LADDER',
+      image: 'https://images.pexels.com/photos/2570139/pexels-photo-2570139.jpeg',
+      setup: [
+        'Set tee at various heights and positions',
+        'Use contact point markers',
+        'Position video recording device',
+        'Set up strike zone grid'
+      ],
+      targets: [
+        'Hit each contact point zone consistently',
+        'Maintain proper swing path',
+        'Achieve optimal ball spin',
+        'Progress through all contact points'
+      ]
+    },
+    {
+      id: '4',
+      title: 'Zone Control Training',
+      description: 'Improve hitting accuracy to all fields',
+      focus: 'Precision',
+      time: '30 min',
+      type: 'soft-toss',
+      drillType: 'DRILL',
+      image: 'https://images.pexels.com/photos/1661950/pexels-photo-1661950.jpeg',
+      setup: [
+        'Mark field zones with cones',
+        'Set up directional guides',
+        'Position soft-toss feeder',
+        'Place target markers'
+      ],
+      targets: [
+        'Hit to designated zones on command',
+        'Maintain consistent exit velocity',
+        'Achieve proper launch angles',
+        'Demonstrate field awareness'
+      ]
+    }
   ];
   
   const adaptiveDrills = [
@@ -71,7 +117,8 @@ export default function PracticeScreen() {
       focus: 'Weakness',
       time: '20 min',
       type: 'soft-toss',
-      image: 'https://images.pexels.com/photos/358042/pexels-photo-358042.jpeg?auto=compress&cs=tinysrgb&w=300',
+      drillType: 'DRILL',
+      image: 'https://images.pexels.com/photos/358042/pexels-photo-358042.jpeg',
       setup: [
         'Partner positioned at 45° angle inside',
         'Set up inside pitch marker',
@@ -85,6 +132,28 @@ export default function PracticeScreen() {
         'Hit 70% of balls to pull side'
       ]
     },
+    {
+      id: '6',
+      title: 'Progressive Power Path',
+      description: 'AI-driven power development sequence',
+      focus: 'Power',
+      time: '25 min',
+      type: 'tee',
+      drillType: 'LADDER',
+      image: 'https://images.pexels.com/photos/8224681/pexels-photo-8224681.jpeg',
+      setup: [
+        'Set up progressive resistance bands',
+        'Position power measurement sensors',
+        'Mark progression checkpoints',
+        'Configure feedback system'
+      ],
+      targets: [
+        'Complete each power level sequence',
+        'Maintain proper mechanics',
+        'Achieve target exit velocities',
+        'Progress through resistance levels'
+      ]
+    }
   ];
   
   const drills = selectedDrillType === 'skill' ? skillDrills : adaptiveDrills;
@@ -129,13 +198,15 @@ export default function PracticeScreen() {
       </ScrollView>
 
       {/* Floating Action Button */}
-      <TouchableOpacity 
-        style={styles.fab}
-        onPress={() => setSetupModalVisible(true)}
-      >
-        <Play size={24} color={colors.white} />
-        <Text style={styles.fabText}>Free Practice</Text>
-      </TouchableOpacity>
+      <View style={styles.fabContainer}>
+        <TouchableOpacity 
+          style={styles.fab}
+          onPress={() => setSetupModalVisible(true)}
+        >
+          <Play size={24} color={colors.white} />
+          <Text style={styles.fabText}>Free Practice</Text>
+        </TouchableOpacity>
+      </View>
       
       <SessionSetupModal 
         visible={setupModalVisible} 
@@ -189,16 +260,22 @@ const styles = StyleSheet.create({
     gap: 16,
     paddingBottom: 100, // Add padding to account for FAB
   },
-  fab: {
+  fabContainer: {
     position: 'absolute',
     bottom: 24,
-    right: 24,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  fab: {
     backgroundColor: colors.status.error,
     borderRadius: 30,
     paddingVertical: 16,
     paddingHorizontal: 24,
     flexDirection: 'row',
     alignItems: 'center',
+    width: '90%',
+    justifyContent: 'center',
     shadowColor: colors.status.error,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
