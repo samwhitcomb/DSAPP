@@ -6,10 +6,9 @@ import { colors, typography } from '@/constants/theme';
 interface SessionSetupModalProps {
   visible: boolean;
   onClose: () => void;
-  onStart: () => void;
 }
 
-export function SessionSetupModal({ visible, onClose, onStart }: SessionSetupModalProps) {
+export function SessionSetupModal({ visible, onClose }: SessionSetupModalProps) {
   const [sessionType, setSessionType] = useState('tee');
   const [pitchIntent, setPitchIntent] = useState('middle-middle');
   
@@ -119,10 +118,7 @@ export function SessionSetupModal({ visible, onClose, onStart }: SessionSetupMod
           </ScrollView>
           
           <View style={styles.footer}>
-            <TouchableOpacity 
-              style={styles.startButton}
-              onPress={onStart}
-            >
+            <TouchableOpacity style={styles.startButton} onPress={onClose}>
               <Text style={styles.startButtonText}>Start Session</Text>
             </TouchableOpacity>
           </View>
