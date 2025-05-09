@@ -5,9 +5,13 @@ import { StatusBar } from 'expo-status-bar';
 import { GameCard } from '@/components/games/GameCard';
 import { LeaderboardItem } from '@/components/games/LeaderboardItem';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography } from '@/constants/theme';
+import { useColors, typography } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function GamesScreen() {
+  const colors = useColors();
+  const { isDark } = useTheme();
+  
   // Mock games data
   const games = [
     {
@@ -46,13 +50,13 @@ export default function GamesScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
+      <StatusBar style={isDark ? "light" : "dark"} />
       <View style={styles.header}>
-        <Text style={typography.h1}>Games</Text>
+        <Text style={[typography.h1, { color: colors.grey[600] }]}>Games</Text>
         <TouchableOpacity style={styles.historyButton}>
           <Ionicons name="time-outline" size={20} color={colors.grey[600]} />
-          <Text style={styles.historyText}>History</Text>
+          <Text style={[styles.historyText, { color: colors.grey[600] }]}>History</Text>
         </TouchableOpacity>
       </View>
       
@@ -115,7 +119,6 @@ export default function GamesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.grey[50],
   },
   header: {
     flexDirection: 'row',
@@ -131,7 +134,6 @@ const styles = StyleSheet.create({
   historyText: {
     fontFamily: 'Barlow-Medium',
     fontSize: 14,
-    color: colors.grey[600],
   },
   scrollContainer: {
     flex: 1,
