@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Filter, Calendar, ChevronRight, ChartBar as BarChart3, Compare } from 'lucide-react-native';
+import { Filter, Calendar, ChevronRight, ChartBar as BarChart3, GitCompare as Compare } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SessionCard } from '@/components/performance/SessionCard';
 import { FilterMenu } from '@/components/performance/FilterMenu';
