@@ -15,6 +15,7 @@ export default function SessionScreen() {
   const [isLandscape, setIsLandscape] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showEndModal, setShowEndModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const camera = useRef<Camera>(null);
 
@@ -31,10 +32,10 @@ export default function SessionScreen() {
     }
   };
 
-  // For web preview, we'll skip the orientation check
-  const shouldShowCamera = Platform.OS === 'web' || isLandscape;
+  // For web preview, we'll show a placeholder instead of camera
+  const isWeb = Platform.OS === 'web';
 
-  if (!permission?.granted) {
+  if (!permission?.granted && !isWeb) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permissionContainer}>
@@ -50,41 +51,59 @@ export default function SessionScreen() {
     );
   }
 
-  if (!shouldShowCamera) {
+  if (!isLandscape && !isWeb) {
     return <OrientationPrompt onRotate={() => setIsLandscape(true)} />;
   }
 
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <CameraView
-        ref={camera}
-        style={styles.camera}
-        type={CameraType.back}
-      >
-        <View style={styles.overlay}>
-          <View style={styles.header}>
-            <TouchableOpacity 
-              style={styles.iconButton}
-              onPress={() => setShowEndModal(true)}
-            >
-              <X size={24} color={colors.white} />
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.iconButton}
-              onPress={() => setIsPaused(!isPaused)}
-            >
-              {isPaused ? (
-                <Play size={24} color={colors.white} />
-              ) : (
-                <Pause size={24} color={colors.white} />
-              )}
-            </TouchableOpacity>
-          </View>
-          
-          <SessionMetrics />
+      {isWeb ? (
+        // Web placeholder
+        <View style={styles.webPlaceholder}>
+          <Text style={styles.webPlaceholderText}>
+            Camera preview is not available in web browser.
+            Please use the mobile app for full functionality.
+          </Text>
         </View>
-      </CameraView>
+      ) : (
+        // Native camera view
+        <CameraView
+          ref={camera}
+          style={styles.camera}
+          type={CameraType.back}
+          onError={(error) => setError(error.message)}
+        >
+          <View style={styles.overlay}>
+            <View style={styles.header}>
+              <TouchableOpacity 
+                style={styles.iconButton}
+                onPress={() => setShowEndModal(true)}
+              >
+                <X size={24} color={colors.white} />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.iconButton}
+                onPress={() => setIsPaused(!isPaused)}
+              >
+                {isPaused ? (
+                  <Play size={24} color={colors.white} />
+                ) : (
+                  <Pause size={24} color={colors.white} />
+                )}
+              </TouchableOpacity>
+            </View>
+            
+            <SessionMetrics />
+          </View>
+        </CameraView>
+      )}
+
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      )}
 
       <EndSessionModal 
         visible={showEndModal}
@@ -141,5 +160,31 @@ const styles = StyleSheet.create({
   permissionButtonText: {
     ...typography.button,
     color: colors.white,
+  },
+  webPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: colors.grey[900],
+  },
+  webPlaceholderText: {
+    ...typography.body1,
+    color: colors.white,
+    textAlign: 'center',
+  },
+  errorContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: colors.status.error,
+    padding: 16,
+    borderRadius: 8,
+  },
+  errorText: {
+    ...typography.body1,
+    color: colors.white,
+    textAlign: 'center',
   },
 });
