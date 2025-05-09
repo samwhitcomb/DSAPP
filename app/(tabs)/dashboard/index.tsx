@@ -9,10 +9,13 @@ import { QuickStatsCard } from '@/components/dashboard/QuickStatsCard';
 import { PracticeRecommendation } from '@/components/dashboard/PracticeRecommendation';
 import { HotZoneMap } from '@/components/shared/HotZoneMap';
 import { DeviceManagementModal } from '@/components/device/DeviceManagementModal';
-import { colors, typography } from '@/constants/theme';
+import { useColors, typography } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function DashboardScreen() {
   const router = useRouter();
+  const colors = useColors();
+  const { isDark } = useTheme();
   const [deviceModalVisible, setDeviceModalVisible] = useState(false);
   
   // Mock user data
@@ -50,19 +53,19 @@ export default function DashboardScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
+      <StatusBar style={isDark ? "light" : "dark"} />
       <View style={styles.header}>
-        <Text style={typography.h1}>Dashboard</Text>
+        <Text style={[typography.h1, { color: colors.grey[600] }]}>Dashboard</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity 
-            style={styles.iconButton}
+            style={[styles.iconButton, { backgroundColor: colors.grey[100] }]}
             onPress={() => setDeviceModalVisible(true)}
           >
             <Smartphone size={24} color={colors.grey[600]} />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.iconButton}
+            style={[styles.iconButton, { backgroundColor: colors.grey[100] }]}
             onPress={() => router.push('/settings')}
           >
             <Settings size={24} color={colors.grey[600]} />
@@ -74,15 +77,15 @@ export default function DashboardScreen() {
         <ProfileHeader user={user} achievement={recentAchievement} />
         
         <View style={styles.statsContainer}>
-          <Text style={styles.sectionTitle}>Quick Stats</Text>
+          <Text style={[styles.sectionTitle, { color: colors.grey[600] }]}>Quick Stats</Text>
           <QuickStatsCard stats={quickStats} />
         </View>
         
         <View style={styles.recommendedContainer}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recommended Practice</Text>
+            <Text style={[styles.sectionTitle, { color: colors.grey[600] }]}>Recommended Practice</Text>
             <TouchableOpacity>
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={[styles.viewAllText, { color: colors.primary }]}>View All</Text>
             </TouchableOpacity>
           </View>
           
@@ -95,9 +98,11 @@ export default function DashboardScreen() {
         
         <View style={styles.zoneContainer}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Hot/Cold Zones</Text>
+            <Text style={[styles.sectionTitle, { color: colors.grey[600] }]}>Hot/Cold Zones</Text>
             <TouchableOpacity onPress={() => router.push('/performance')}>
-              <Text style={styles.viewAllText}>Full Analysis <ArrowUpRight size={14} color="#0F52BA" /></Text>
+              <Text style={[styles.viewAllText, { color: colors.primary }]}>
+                Full Analysis <ArrowUpRight size={14} color={colors.primary} />
+              </Text>
             </TouchableOpacity>
           </View>
           
@@ -109,10 +114,10 @@ export default function DashboardScreen() {
             style={styles.startSessionButton}
             onPress={() => router.push('/practice')}
           >
-            <Play size={24} color="#FFFFFF" />
-            <Text style={styles.startSessionText}>Start Session</Text>
+            <Play size={24} color={colors.white} />
+            <Text style={[styles.startSessionText, { color: colors.white }]}>Start Session</Text>
           </TouchableOpacity>
-          <Text style={styles.startSessionSubtext}>Tee or Soft Toss</Text>
+          <Text style={[styles.startSessionSubtext, { color: colors.grey[400] }]}>Tee or Soft Toss</Text>
         </View>
       </ScrollView>
 
@@ -127,7 +132,6 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
   header: {
     flexDirection: 'row',
@@ -143,7 +147,6 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: colors.grey[100],
   },
   statsContainer: {
     marginTop: 16,
@@ -162,12 +165,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontFamily: 'Barlow-SemiBold',
     fontSize: 18,
-    color: colors.grey[600],
   },
   viewAllText: {
     fontFamily: 'Barlow-Medium',
     fontSize: 14,
-    color: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -203,13 +204,11 @@ const styles = StyleSheet.create({
   startSessionText: {
     fontFamily: 'Barlow-Bold',
     fontSize: 18,
-    color: colors.white,
     marginLeft: 12,
   },
   startSessionSubtext: {
     fontFamily: 'Barlow-Regular',
     fontSize: 14,
-    color: colors.grey[400],
     marginTop: 8,
   },
 });

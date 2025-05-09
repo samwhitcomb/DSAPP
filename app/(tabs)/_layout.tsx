@@ -2,10 +2,11 @@ import { Tabs } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LayoutDashboard, Target, Trophy, ChartBar as BarChart3 } from 'lucide-react-native';
-import { colors } from '@/constants/theme';
+import { useColors } from '@/constants/theme';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
 
   return (
     <Tabs
@@ -15,6 +16,8 @@ export default function TabLayout() {
           ...styles.tabBar,
           height: 60 + insets.bottom,
           paddingBottom: insets.bottom,
+          backgroundColor: colors.white,
+          borderTopColor: colors.grey[100],
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.grey[400],
@@ -72,11 +75,8 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.grey[100],
     elevation: 8,
-    shadowColor: colors.black,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
