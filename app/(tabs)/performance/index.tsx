@@ -10,8 +10,12 @@ import { SprayChart } from '@/components/performance/SprayChart';
 import { LaunchAngleChart } from '@/components/performance/LaunchAngleChart';
 import { SessionComparisonModal } from '@/components/performance/SessionComparisonModal';
 import { BenchmarkComparison } from '@/components/performance/BenchmarkComparison';
+import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
+import { TrendChart } from '@/components/performance/TrendChart';
 import { useColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
+
+type VisualizationTab = 'overview' | 'advanced' | 'benchmarks';
 
 export default function PerformanceScreen() {
   const colors = useColors();
@@ -20,6 +24,15 @@ export default function PerformanceScreen() {
   const [filterType, setFilterType] = useState('All');
   const [comparisonVisible, setComparisonVisible] = useState(false);
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<VisualizationTab>('overview');
+  const [selectedMetric, setSelectedMetric] = useState<'exitVelocity' | 'launchAngle' | 'barrelPercentage'>('exitVelocity');
+
+  // Mock data for trend chart
+  const trendData = {
+    exitVelocity: [82, 84, 83, 85, 87],
+    launchAngle: [12, 13, 15, 14, 15],
+    barrelPercentage: [25, 26, 28, 30, 32],
+  };
 
   // Mock data for radar chart
   const skillProfile = [
@@ -44,6 +57,15 @@ export default function PerformanceScreen() {
     { exitVelocity: 88, launchAngle: 15 },
     { exitVelocity: 92, launchAngle: 30 },
   ];
+
+  // Mock benchmark data
+  const benchmarkData = {
+    label: 'Exit Velocity',
+    value: 87,
+    unit: 'mph',
+    nationalAvg: 83,
+    ageGroupAvg: 80,
+  };
 
   // Mock session data
   const sessions = [
@@ -95,6 +117,45 @@ export default function PerformanceScreen() {
     selectedSessions.includes(session.id)
   );
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <>
+            <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+              <PerformanceMetricSelector 
+                selectedMetric={selectedMetric}
+                onSelectMetric={setSelectedMetric}
+              />
+              <TrendChart data={trendData[selectedMetric]} metric={selectedMetric} />
+            </View>
+            <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+              <RadarChart data={skillProfile} />
+            </View>
+          </>
+        );
+      case 'advanced':
+        return (
+          <>
+            <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+              <SprayChart hits={hits} />
+            </View>
+            <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+              <LaunchAngleChart hits={launchData} />
+            </View>
+          </>
+        );
+      case 'benchmarks':
+        return (
+          <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+            <BenchmarkComparison metric={benchmarkData} />
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
       <StatusBar style={isDark ? "light" : "dark"} />
@@ -113,18 +174,50 @@ export default function PerformanceScreen() {
         </View>
       </View>
 
+      <View style={styles.tabContainer}>
+        <TouchableOpacity 
+          style={[
+            styles.tab, 
+            activeTab === 'overview' && styles.activeTab,
+            { backgroundColor: activeTab === 'overview' ? colors.primary : colors.grey[100] }
+          ]}
+          onPress={() => setActiveTab('overview')}
+        >
+          <Text style={[
+            styles.tabText,
+            { color: activeTab === 'overview' ? colors.white : colors.grey[600] }
+          ]}>Overview</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.tab, 
+            activeTab === 'advanced' && styles.activeTab,
+            { backgroundColor: activeTab === 'advanced' ? colors.primary : colors.grey[100] }
+          ]}
+          onPress={() => setActiveTab('advanced')}
+        >
+          <Text style={[
+            styles.tabText,
+            { color: activeTab === 'advanced' ? colors.white : colors.grey[600] }
+          ]}>Advanced</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.tab, 
+            activeTab === 'benchmarks' && styles.activeTab,
+            { backgroundColor: activeTab === 'benchmarks' ? colors.primary : colors.grey[100] }
+          ]}
+          onPress={() => setActiveTab('benchmarks')}
+        >
+          <Text style={[
+            styles.tabText,
+            { color: activeTab === 'benchmarks' ? colors.white : colors.grey[600] }
+          ]}>Benchmarks</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
-          <RadarChart data={skillProfile} />
-        </View>
-
-        <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
-          <SprayChart hits={hits} />
-        </View>
-
-        <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
-          <LaunchAngleChart hits={launchData} />
-        </View>
+        {renderTabContent()}
 
         <View style={styles.sessionsHeader}>
           <Text style={[styles.sessionsTitle, { color: colors.grey[600] }]}>Session History</Text>
@@ -193,6 +286,30 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 8,
     borderRadius: 8,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+    gap: 8,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  activeTab: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  tabText: {
+    fontFamily: 'Barlow-Medium',
+    fontSize: 14,
   },
   content: {
     flex: 1,
