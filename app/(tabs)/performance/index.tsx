@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Filter, Calendar, ChevronRight, ChartBar as BarChart3 } from 'lucide-react-native';
+import { Filter, Calendar, ChevronRight, ChartBar as BarChart3, Compare } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SessionCard } from '@/components/performance/SessionCard';
 import { FilterMenu } from '@/components/performance/FilterMenu';
 import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
 import { TrendChart } from '@/components/performance/TrendChart';
-import { useColors, typography } from '@/constants/theme';
+import { SessionComparisonModal } from '@/components/performance/SessionComparisonModal';
+import { BenchmarkComparison } from '@/components/performance/BenchmarkComparison';
+import { useColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 
 type MetricType = 'exitVelocity' | 'launchAngle' | 'barrelPercentage';
@@ -18,6 +20,8 @@ export default function PerformanceScreen() {
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterType, setFilterType] = useState('All');
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('exitVelocity');
+  const [comparisonVisible, setComparisonVisible] = useState(false);
+  const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
   
   // Mock session data
   const sessions = [
@@ -47,46 +51,32 @@ export default function PerformanceScreen() {
         barrelPercentage: 36,
       },
     },
-    {
-      id: '3',
-      date: 'May 15',
-      time: '3:45 PM',
-      type: 'Practice',
-      title: 'Exit Velocity Builder',
-      metrics: {
-        swings: 55,
-        avgExitVelo: 85,
-        avgLaunchAngle: 14,
-        barrelPercentage: 29,
-      },
-    },
-    {
-      id: '4',
-      date: 'May 12',
-      time: '4:30 PM',
-      type: 'Game',
-      title: 'Consistency Gauntlet',
-      metrics: {
-        swings: 30,
-        avgExitVelo: 86,
-        avgLaunchAngle: 16,
-        barrelPercentage: 30,
-      },
-    },
-    {
-      id: '5',
-      date: 'May 10',
-      time: '1:15 PM',
-      type: 'Practice',
-      title: 'Zone Mastery',
-      metrics: {
-        swings: 50,
-        avgExitVelo: 84,
-        avgLaunchAngle: 13,
-        barrelPercentage: 28,
-      },
-    },
   ];
+
+  // Mock benchmark data
+  const benchmarkData = {
+    exitVelocity: {
+      label: 'Exit Velocity',
+      value: 87,
+      unit: 'mph',
+      nationalAvg: 83,
+      ageGroupAvg: 85,
+    },
+    launchAngle: {
+      label: 'Launch Angle',
+      value: 15,
+      unit: '°',
+      nationalAvg: 12,
+      ageGroupAvg: 14,
+    },
+    barrelPercentage: {
+      label: 'Barrel %',
+      value: 32,
+      unit: '%',
+      nationalAvg: 28,
+      ageGroupAvg: 30,
+    },
+  };
   
   const filteredSessions = filterType === 'All' 
     ? sessions 
@@ -98,11 +88,27 @@ export default function PerformanceScreen() {
     barrelPercentage: [25, 26, 28, 30, 32],
   };
 
+  const handleSessionSelect = (sessionId: string) => {
+    if (selectedSessions.includes(sessionId)) {
+      setSelectedSessions(selectedSessions.filter(id => id !== sessionId));
+    } else if (selectedSessions.length < 2) {
+      setSelectedSessions([...selectedSessions, sessionId]);
+    }
+
+    if (selectedSessions.length === 1) {
+      setComparisonVisible(true);
+    }
+  };
+
+  const selectedSessionsData = sessions.filter(session => 
+    selectedSessions.includes(session.id)
+  );
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
       <StatusBar style={isDark ? "light" : "dark"} />
       <View style={styles.header}>
-        <Text style={[typography.h1, { color: colors.grey[600] }]}>Performance</Text>
+        <Text style={[styles.title, { color: colors.grey[600] }]}>Performance</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity 
             style={[styles.iconButton, { backgroundColor: colors.grey[100] }]}
@@ -116,35 +122,58 @@ export default function PerformanceScreen() {
         </View>
       </View>
       
-      <View style={[styles.trendContainer, { backgroundColor: colors.white }]}>
-        <PerformanceMetricSelector 
-          selectedMetric={selectedMetric}
-          onSelectMetric={setSelectedMetric}
-        />
-        <TrendChart data={trendData[selectedMetric]} metric={selectedMetric} />
-      </View>
-      
-      <View style={styles.sessionsHeader}>
-        <Text style={[styles.sessionsTitle, { color: colors.grey[600] }]}>Session History</Text>
-        <TouchableOpacity style={styles.analysisButton}>
-          <Text style={[styles.analysisText, { color: colors.primary }]}>Analysis Tools</Text>
-          <ChevronRight size={16} color={colors.primary} />
-        </TouchableOpacity>
-      </View>
-      
-      <FlatList
-        data={filteredSessions}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <SessionCard session={item} />}
-        contentContainerStyle={styles.sessionsList}
-        showsVerticalScrollIndicator={false}
-      />
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={[styles.trendContainer, { backgroundColor: colors.white }]}>
+          <PerformanceMetricSelector 
+            selectedMetric={selectedMetric}
+            onSelectMetric={setSelectedMetric}
+          />
+          <TrendChart data={trendData[selectedMetric]} metric={selectedMetric} />
+        </View>
+
+        <View style={styles.benchmarkSection}>
+          <Text style={[styles.sectionTitle, { color: colors.grey[600] }]}>Performance Benchmarks</Text>
+          <BenchmarkComparison metric={benchmarkData[selectedMetric]} />
+        </View>
+        
+        <View style={styles.sessionsHeader}>
+          <Text style={[styles.sessionsTitle, { color: colors.grey[600] }]}>Session History</Text>
+          <TouchableOpacity 
+            style={styles.compareButton}
+            onPress={() => setSelectedSessions([])}
+          >
+            <Compare size={16} color={colors.primary} />
+            <Text style={[styles.compareText, { color: colors.primary }]}>
+              {selectedSessions.length === 0 ? 'Compare Sessions' : `Selected: ${selectedSessions.length}/2`}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        
+        {filteredSessions.map((session) => (
+          <SessionCard 
+            key={session.id}
+            session={session}
+            selected={selectedSessions.includes(session.id)}
+            onSelect={handleSessionSelect}
+            selectionMode={selectedSessions.length > 0}
+          />
+        ))}
+      </ScrollView>
       
       <FilterMenu 
         visible={filterVisible}
         onClose={() => setFilterVisible(false)}
         currentFilter={filterType}
         onSelectFilter={setFilterType}
+      />
+
+      <SessionComparisonModal
+        visible={comparisonVisible}
+        onClose={() => {
+          setComparisonVisible(false);
+          setSelectedSessions([]);
+        }}
+        sessions={selectedSessionsData}
       />
     </SafeAreaView>
   );
@@ -162,14 +191,21 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 16,
   },
+  title: {
+    fontFamily: 'Barlow-Bold',
+    fontSize: 32,
+  },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
   iconButton: {
     padding: 8,
     borderRadius: 8,
-    marginLeft: 8,
+  },
+  content: {
+    flex: 1,
   },
   trendContainer: {
     padding: 16,
@@ -182,6 +218,15 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
+  benchmarkSection: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontFamily: 'Barlow-SemiBold',
+    fontSize: 18,
+    marginBottom: 12,
+  },
   sessionsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -190,18 +235,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sessionsTitle: {
-    ...typography.h3,
+    fontFamily: 'Barlow-SemiBold',
+    fontSize: 18,
   },
-  analysisButton: {
+  compareButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
   },
-  analysisText: {
+  compareText: {
     fontFamily: 'Barlow-Medium',
     fontSize: 14,
-  },
-  sessionsList: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
   },
 });
