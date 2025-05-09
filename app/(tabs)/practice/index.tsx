@@ -15,6 +15,7 @@ export default function PracticeScreen() {
   const [guideModalVisible, setGuideModalVisible] = useState(false);
   const [selectedDrillType, setSelectedDrillType] = useState('skill');
   const [selectedDrill, setSelectedDrill] = useState(null);
+  const [sessionPaused, setSessionPaused] = useState(false);
   const router = useRouter();
   
   // Mock drill data
@@ -163,6 +164,16 @@ export default function PracticeScreen() {
     setGuideModalVisible(true);
   };
 
+  const handleStartSession = () => {
+    setSetupModalVisible(false);
+    router.push('/session');
+  };
+
+  const handleResumeSession = () => {
+    setSessionPaused(false);
+    router.push('/session');
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
@@ -200,24 +211,30 @@ export default function PracticeScreen() {
       {/* Floating Action Button */}
       <View style={styles.fabContainer}>
         <TouchableOpacity 
-          style={styles.fab}
-          onPress={() => setSetupModalVisible(true)}
+          style={[
+            styles.fab,
+            sessionPaused && styles.resumeFab
+          ]}
+          onPress={sessionPaused ? handleResumeSession : () => setSetupModalVisible(true)}
         >
           <Play size={24} color={colors.white} />
-          <Text style={styles.fabText}>Free Practice</Text>
+          <Text style={styles.fabText}>
+            {sessionPaused ? 'Resume Session' : 'Free Practice'}
+          </Text>
         </TouchableOpacity>
       </View>
       
       <SessionSetupModal 
         visible={setupModalVisible} 
         onClose={() => setSetupModalVisible(false)}
+        onStart={handleStartSession}
       />
 
       <DrillGuideModal
         visible={guideModalVisible}
         onClose={() => {
           setGuideModalVisible(false);
-          setSetupModalVisible(true);
+          handleStartSession();
         }}
         drill={selectedDrill}
       />
@@ -287,5 +304,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.white,
     marginLeft: 12,
+  },
+  resumeFab: {
+    backgroundColor: colors.primary,
   },
 });
