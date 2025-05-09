@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "EXPO_NO_TELEMETRY=1 expo start",
     "build:web": "expo export --platform web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "ts:check": "tsc"
   },
   "dependencies": {
     "@expo-google-fonts/barlow": "^0.2.3",
