@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { CameraView, Camera, CameraType, useCameraPermissions } from 'expo-camera';
@@ -31,6 +31,9 @@ export default function SessionScreen() {
     }
   };
 
+  // For web preview, we'll skip the orientation check
+  const shouldShowCamera = Platform.OS === 'web' || isLandscape;
+
   if (!permission?.granted) {
     return (
       <SafeAreaView style={styles.container}>
@@ -47,7 +50,7 @@ export default function SessionScreen() {
     );
   }
 
-  if (!isLandscape) {
+  if (!shouldShowCamera) {
     return <OrientationPrompt onRotate={() => setIsLandscape(true)} />;
   }
 
