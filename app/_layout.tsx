@@ -17,21 +17,27 @@ function RootLayoutNav() {
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="session" options={{ 
-          presentation: 'fullScreenModal',
-          animation: 'fade',
-          headerShown: false,
-        }} />
-        <Stack.Screen name="session-history" options={{ 
-          headerShown: true,
-          animation: 'slide_from_right',
-        }} />
         <Stack.Screen 
           name="settings" 
           options={{ 
             presentation: 'modal',
             animation: 'slide_from_bottom',
             headerShown: false,
+          }} 
+        />
+        <Stack.Screen 
+          name="session" 
+          options={{ 
+            presentation: 'fullScreenModal',
+            animation: 'fade',
+            headerShown: false,
+          }} 
+        />
+        <Stack.Screen 
+          name="session-history" 
+          options={{ 
+            headerShown: true,
+            animation: 'slide_from_right',
           }} 
         />
         <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
