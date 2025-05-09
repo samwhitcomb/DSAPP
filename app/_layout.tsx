@@ -6,6 +6,7 @@ import { useFonts, Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barl
 import { View, Text, StyleSheet } from 'react-native';
 import { SplashScreen } from 'expo-router';
 import { colors } from '@/constants/theme';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -37,7 +38,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <ThemeProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen 
@@ -51,7 +52,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
       </Stack>
       <StatusBar style="light" />
-    </>
+    </ThemeProvider>
   );
 }
 

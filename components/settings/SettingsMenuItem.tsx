@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { ChevronRight } from 'lucide-react-native';
+import { ChevronRight, Check } from 'lucide-react-native';
 import { colors, typography } from '@/constants/theme';
 
 interface SettingsMenuItemProps {
@@ -10,6 +10,7 @@ interface SettingsMenuItemProps {
   showChevron?: boolean;
   destructive?: boolean;
   isHeader?: boolean;
+  selected?: boolean;
 }
 
 export function SettingsMenuItem({ 
@@ -20,6 +21,7 @@ export function SettingsMenuItem({
   showChevron = true,
   destructive = false,
   isHeader = false,
+  selected = false,
 }: SettingsMenuItemProps) {
   return (
     <TouchableOpacity
@@ -51,9 +53,11 @@ export function SettingsMenuItem({
           )}
         </View>
       </View>
-      {showChevron && !destructive && (
+      {selected ? (
+        <Check size={20} color={colors.primary} />
+      ) : showChevron && !destructive ? (
         <ChevronRight size={20} color={colors.grey[400]} />
-      )}
+      ) : null}
     </TouchableOpacity>
   );
 }
@@ -108,4 +112,4 @@ const styles = StyleSheet.create({
   destructiveContainer: {
     backgroundColor: colors.white,
   },
-}); 
+});

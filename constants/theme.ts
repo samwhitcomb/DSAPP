@@ -1,5 +1,6 @@
-// Brand Colors
-export const colors = {
+import { useTheme } from '@/contexts/ThemeContext';
+
+const lightColors = {
   // Primary
   primary: '#2B73DF',
   black: '#000000',
@@ -30,6 +31,40 @@ export const colors = {
     warning: '#F59E0B',
     info: '#5082BE',
     error: '#EF4444',
+  },
+};
+
+const darkColors = {
+  // Primary
+  primary: '#4B93FF',
+  black: '#FFFFFF',
+  white: '#1A1A1A',
+
+  // Secondary
+  secondary: {
+    green: '#8CA859',
+    lightGreen: '#BCD084',
+    neonGreen: '#83DC7C',
+    indigo: '#8385f3',
+  },
+
+  // Neutral greys
+  grey: {
+    50: '#1A1A1A',
+    100: '#2A2A2A',
+    200: '#3A3A3A',
+    300: '#4A4A4A',
+    400: '#858585',
+    500: '#A5A5A5',
+    600: '#E5E5E5',
+  },
+
+  // Status colors
+  status: {
+    success: '#42E57E',
+    warning: '#FFB52B',
+    info: '#70A2DE',
+    error: '#FF6464',
   },
 };
 
@@ -76,3 +111,10 @@ export const typography = {
     lineHeight: 16,
   },
 };
+
+export function useColors() {
+  const { isDark } = useTheme();
+  return isDark ? darkColors : lightColors;
+}
+
+export const colors = lightColors; // Keep for backward compatibility
