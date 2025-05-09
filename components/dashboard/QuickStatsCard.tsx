@@ -3,30 +3,30 @@ import { colors } from '@/constants/theme';
 
 interface QuickStatsCardProps {
   stats: {
-    totalSwings: number;
-    avgExitVelo: number;
-    avgLaunchAngle: number;
-  };
+    label: string;
+    value: string;
+    unit: string;
+  }[];
 }
 
 export function QuickStatsCard({ stats }: QuickStatsCardProps) {
   return (
     <View style={styles.container}>
-      <View style={[styles.statItem, styles.statItemBorder]}>
-        <Text style={styles.statValue}>{stats.totalSwings}</Text>
-        <Text style={styles.statLabel}>Total Swings</Text>
-      </View>
-      
-      <View style={[styles.statItem, styles.statItemBorder]}>
-        <Text style={styles.statValue}>{stats.avgExitVelo}</Text>
-        <Text style={styles.statUnit}>mph</Text>
-        <Text style={styles.statLabel}>Avg Exit Velo</Text>
-      </View>
-      
-      <View style={styles.statItem}>
-        <Text style={styles.statValue}>{stats.avgLaunchAngle}°</Text>
-        <Text style={styles.statLabel}>Avg Launch Angle</Text>
-      </View>
+      {stats.map((stat, index) => (
+        <View 
+          key={index} 
+          style={[
+            styles.statItem,
+            index < stats.length - 1 && styles.statItemBorder
+          ]}
+        >
+          <View style={styles.valueContainer}>
+            <Text style={styles.statValue}>{stat.value}</Text>
+            <Text style={styles.statUnit}>{stat.unit}</Text>
+          </View>
+          <Text style={styles.statLabel}>{stat.label}</Text>
+        </View>
+      ))}
     </View>
   );
 }
@@ -53,16 +53,21 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: colors.grey[100],
   },
+  valueContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 4,
+  },
   statValue: {
     fontFamily: 'Barlow-Bold',
     fontSize: 24,
     color: colors.grey[600],
-    marginBottom: 4,
   },
   statUnit: {
     fontFamily: 'Barlow-Regular',
     fontSize: 14,
     color: colors.grey[400],
+    marginLeft: 2,
   },
   statLabel: {
     fontFamily: 'Barlow-Regular',
