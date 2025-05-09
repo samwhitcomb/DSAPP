@@ -1,28 +1,50 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Filter, Calendar, ChevronRight, ChartBar as BarChart3, GitCompare as Compare } from 'lucide-react-native';
+import { Filter, Calendar, ChevronRight, GitCompare as Compare } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SessionCard } from '@/components/performance/SessionCard';
 import { FilterMenu } from '@/components/performance/FilterMenu';
-import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
-import { TrendChart } from '@/components/performance/TrendChart';
+import { RadarChart } from '@/components/performance/RadarChart';
+import { SprayChart } from '@/components/performance/SprayChart';
+import { LaunchAngleChart } from '@/components/performance/LaunchAngleChart';
 import { SessionComparisonModal } from '@/components/performance/SessionComparisonModal';
 import { BenchmarkComparison } from '@/components/performance/BenchmarkComparison';
 import { useColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
-
-type MetricType = 'exitVelocity' | 'launchAngle' | 'barrelPercentage';
 
 export default function PerformanceScreen() {
   const colors = useColors();
   const { isDark } = useTheme();
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterType, setFilterType] = useState('All');
-  const [selectedMetric, setSelectedMetric] = useState<MetricType>('exitVelocity');
   const [comparisonVisible, setComparisonVisible] = useState(false);
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
-  
+
+  // Mock data for radar chart
+  const skillProfile = [
+    { label: 'Exit Velo', value: 85 },
+    { label: 'Launch Angle', value: 75 },
+    { label: 'Plate Coverage', value: 80 },
+    { label: 'Contact Quality', value: 70 },
+    { label: 'Opposite Field', value: 65 },
+    { label: 'Consistency', value: 75 },
+  ];
+
+  // Mock data for spray chart
+  const hits = [
+    { x: 0.7, y: 0.4, exitVelocity: 95, type: 'line' },
+    { x: 0.3, y: 0.5, exitVelocity: 85, type: 'ground' },
+    { x: 0.5, y: 0.3, exitVelocity: 98, type: 'fly' },
+  ];
+
+  // Mock data for launch angle chart
+  const launchData = [
+    { exitVelocity: 95, launchAngle: 25 },
+    { exitVelocity: 88, launchAngle: 15 },
+    { exitVelocity: 92, launchAngle: 30 },
+  ];
+
   // Mock session data
   const sessions = [
     {
@@ -53,40 +75,9 @@ export default function PerformanceScreen() {
     },
   ];
 
-  // Mock benchmark data
-  const benchmarkData = {
-    exitVelocity: {
-      label: 'Exit Velocity',
-      value: 87,
-      unit: 'mph',
-      nationalAvg: 83,
-      ageGroupAvg: 85,
-    },
-    launchAngle: {
-      label: 'Launch Angle',
-      value: 15,
-      unit: '°',
-      nationalAvg: 12,
-      ageGroupAvg: 14,
-    },
-    barrelPercentage: {
-      label: 'Barrel %',
-      value: 32,
-      unit: '%',
-      nationalAvg: 28,
-      ageGroupAvg: 30,
-    },
-  };
-  
   const filteredSessions = filterType === 'All' 
     ? sessions 
     : sessions.filter(session => session.type === filterType);
-    
-  const trendData = {
-    exitVelocity: [82, 84, 83, 85, 87],
-    launchAngle: [12, 13, 15, 14, 15],
-    barrelPercentage: [25, 26, 28, 30, 32],
-  };
 
   const handleSessionSelect = (sessionId: string) => {
     if (selectedSessions.includes(sessionId)) {
@@ -121,21 +112,20 @@ export default function PerformanceScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      
+
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={[styles.trendContainer, { backgroundColor: colors.white }]}>
-          <PerformanceMetricSelector 
-            selectedMetric={selectedMetric}
-            onSelectMetric={setSelectedMetric}
-          />
-          <TrendChart data={trendData[selectedMetric]} metric={selectedMetric} />
+        <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+          <RadarChart data={skillProfile} />
         </View>
 
-        <View style={styles.benchmarkSection}>
-          <Text style={[styles.sectionTitle, { color: colors.grey[600] }]}>Performance Benchmarks</Text>
-          <BenchmarkComparison metric={benchmarkData[selectedMetric]} />
+        <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+          <SprayChart hits={hits} />
         </View>
-        
+
+        <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
+          <LaunchAngleChart hits={launchData} />
+        </View>
+
         <View style={styles.sessionsHeader}>
           <Text style={[styles.sessionsTitle, { color: colors.grey[600] }]}>Session History</Text>
           <TouchableOpacity 
@@ -159,7 +149,7 @@ export default function PerformanceScreen() {
           />
         ))}
       </ScrollView>
-      
+
       <FilterMenu 
         visible={filterVisible}
         onClose={() => setFilterVisible(false)}
@@ -207,25 +197,14 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  trendContainer: {
-    padding: 16,
-    marginHorizontal: 16,
+  chartContainer: {
+    margin: 16,
     borderRadius: 12,
-    marginBottom: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
-  },
-  benchmarkSection: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontFamily: 'Barlow-SemiBold',
-    fontSize: 18,
-    marginBottom: 12,
   },
   sessionsHeader: {
     flexDirection: 'row',
