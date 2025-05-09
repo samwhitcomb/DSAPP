@@ -3,10 +3,12 @@ import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LayoutDashboard, Target, Trophy, ChartBar as BarChart3 } from 'lucide-react-native';
 import { useColors } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const colors = useColors();
+  const { isDark } = useTheme();
 
   return (
     <Tabs
@@ -80,6 +82,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
+    borderTopWidth: 1,
   },
   tabBarLabel: {
     fontFamily: 'Barlow-Medium',
