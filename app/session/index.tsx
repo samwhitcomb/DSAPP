@@ -7,10 +7,12 @@ import { X, Pause, Play } from 'lucide-react-native';
 import { colors, typography } from '@/constants/theme';
 import { SessionMetrics } from '@/components/session/SessionMetrics';
 import { EndSessionModal } from '@/components/session/EndSessionModal';
+import { OrientationPrompt } from '@/components/session/OrientationPrompt';
 
 export default function SessionScreen() {
   const [isPaused, setIsPaused] = useState(false);
   const [showEndModal, setShowEndModal] = useState(false);
+  const [isOrientationPromptVisible, setIsOrientationPromptVisible] = useState(true);
   const router = useRouter();
 
   const handleEndSession = (shouldEnd: boolean) => {
@@ -19,6 +21,12 @@ export default function SessionScreen() {
       router.back();
     }
   };
+
+  if (isOrientationPromptVisible) {
+    return (
+      <OrientationPrompt onContinue={() => setIsOrientationPromptVisible(false)} />
+    );
+  }
 
   return (
     <View style={styles.container}>
