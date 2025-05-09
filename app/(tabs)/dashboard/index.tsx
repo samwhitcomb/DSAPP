@@ -52,6 +52,92 @@ export default function DashboardScreen() {
     }
   ];
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    headerButtons: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    iconButton: {
+      padding: 8,
+      borderRadius: 8,
+    },
+    statsContainer: {
+      marginTop: 16,
+      paddingHorizontal: 16,
+    },
+    recommendedContainer: {
+      marginTop: 24,
+      paddingHorizontal: 16,
+    },
+    sectionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    sectionTitle: {
+      fontFamily: 'Barlow-SemiBold',
+      fontSize: 18,
+      color: colors.grey[600],
+    },
+    viewAllText: {
+      fontFamily: 'Barlow-Medium',
+      fontSize: 14,
+      color: colors.primary,
+    },
+    recommendationsWrapper: {
+      gap: 16,
+    },
+    zoneContainer: {
+      marginTop: 24,
+      paddingHorizontal: 16,
+    },
+    startSessionContainer: {
+      marginTop: 32,
+      marginBottom: 24,
+      alignItems: 'center',
+      paddingHorizontal: 16,
+    },
+    startSessionButton: {
+      flexDirection: 'row',
+      backgroundColor: colors.status.error,
+      borderRadius: 30,
+      paddingVertical: 16,
+      paddingHorizontal: 32,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      maxWidth: 280,
+      shadowColor: colors.status.error,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    startSessionText: {
+      fontFamily: 'Barlow-Bold',
+      fontSize: 18,
+      color: colors.white,
+      marginLeft: 12,
+    },
+    startSessionSubtext: {
+      fontFamily: 'Barlow-Regular',
+      fontSize: 14,
+      color: colors.grey[400],
+      marginTop: 8,
+    },
+  });
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
       <StatusBar style={isDark ? "light" : "dark"} />
@@ -115,9 +201,9 @@ export default function DashboardScreen() {
             onPress={() => router.push('/practice')}
           >
             <Play size={24} color={colors.white} />
-            <Text style={[styles.startSessionText, { color: colors.white }]}>Start Session</Text>
+            <Text style={styles.startSessionText}>Start Session</Text>
           </TouchableOpacity>
-          <Text style={[styles.startSessionSubtext, { color: colors.grey[400] }]}>Tee or Soft Toss</Text>
+          <Text style={styles.startSessionSubtext}>Tee or Soft Toss</Text>
         </View>
       </ScrollView>
 
@@ -128,87 +214,3 @@ export default function DashboardScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  headerButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  iconButton: {
-    padding: 8,
-    borderRadius: 8,
-  },
-  statsContainer: {
-    marginTop: 16,
-    paddingHorizontal: 16,
-  },
-  recommendedContainer: {
-    marginTop: 24,
-    paddingHorizontal: 16,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontFamily: 'Barlow-SemiBold',
-    fontSize: 18,
-  },
-  viewAllText: {
-    fontFamily: 'Barlow-Medium',
-    fontSize: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  recommendationsWrapper: {
-    gap: 16,
-  },
-  zoneContainer: {
-    marginTop: 24,
-    paddingHorizontal: 16,
-  },
-  startSessionContainer: {
-    marginTop: 32,
-    marginBottom: 24,
-    alignItems: 'center',
-    paddingHorizontal: 16,
-  },
-  startSessionButton: {
-    flexDirection: 'row',
-    backgroundColor: colors.status.error,
-    borderRadius: 30,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    maxWidth: 280,
-    shadowColor: colors.status.error,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  startSessionText: {
-    fontFamily: 'Barlow-Bold',
-    fontSize: 18,
-    marginLeft: 12,
-  },
-  startSessionSubtext: {
-    fontFamily: 'Barlow-Regular',
-    fontSize: 14,
-    marginTop: 8,
-  },
-});

@@ -49,6 +49,108 @@ export default function GamesScreen() {
     { rank: 5, name: 'Emma L.', score: 203, image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=300' },
   ];
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 16,
+    },
+    historyButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    historyText: {
+      fontFamily: 'Barlow-Medium',
+      fontSize: 14,
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    sectionTitle: {
+      fontFamily: 'Barlow-SemiBold',
+      fontSize: 18,
+      color: colors.grey[600],
+      marginBottom: 16,
+    },
+    gamesContainer: {
+      paddingHorizontal: 16,
+      paddingTop: 8,
+      paddingBottom: 24,
+    },
+    leaderboardContainer: {
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+      backgroundColor: colors.white,
+      marginBottom: 24,
+    },
+    leaderboardHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    leaderboardTitleContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    leaderboardTitle: {
+      fontFamily: 'Barlow-SemiBold',
+      fontSize: 18,
+      color: colors.grey[600],
+      marginLeft: 8,
+    },
+    viewAllText: {
+      fontFamily: 'Barlow-Medium',
+      fontSize: 14,
+      color: colors.grey[600],
+    },
+    leaderboardList: {
+      gap: 12,
+    },
+    achievementsContainer: {
+      paddingHorizontal: 16,
+      paddingBottom: 32,
+    },
+    achievementCard: {
+      backgroundColor: colors.white,
+      borderRadius: 12,
+      padding: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+      shadowColor: colors.grey[600],
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    achievementIconContainer: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.secondary.lightGreen,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 16,
+    },
+    achievementTitle: {
+      fontFamily: 'Barlow-Bold',
+      fontSize: 16,
+      color: colors.grey[600],
+      marginBottom: 4,
+    },
+    achievementDescription: {
+      fontFamily: 'Barlow-Regular',
+      fontSize: 14,
+      color: colors.grey[500],
+    },
+  });
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
       <StatusBar style={isDark ? "light" : "dark"} />
@@ -115,105 +217,3 @@ export default function GamesScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-  },
-  historyButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  historyText: {
-    fontFamily: 'Barlow-Medium',
-    fontSize: 14,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontFamily: 'Barlow-SemiBold',
-    fontSize: 18,
-    color: colors.grey[600],
-    marginBottom: 16,
-  },
-  gamesContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 24,
-  },
-  leaderboardContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    backgroundColor: colors.white,
-    marginBottom: 24,
-  },
-  leaderboardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  leaderboardTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  leaderboardTitle: {
-    fontFamily: 'Barlow-SemiBold',
-    fontSize: 18,
-    color: colors.grey[600],
-    marginLeft: 8,
-  },
-  viewAllText: {
-    fontFamily: 'Barlow-Medium',
-    fontSize: 14,
-    color: colors.grey[600],
-  },
-  leaderboardList: {
-    gap: 12,
-  },
-  achievementsContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 32,
-  },
-  achievementCard: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    shadowColor: colors.grey[600],
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  achievementIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.secondary.lightGreen,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  achievementTitle: {
-    fontFamily: 'Barlow-Bold',
-    fontSize: 16,
-    color: colors.grey[600],
-    marginBottom: 4,
-  },
-  achievementDescription: {
-    fontFamily: 'Barlow-Regular',
-    fontSize: 14,
-    color: colors.grey[500],
-  },
-});
