@@ -12,10 +12,12 @@ import { SessionComparisonModal } from '@/components/performance/SessionComparis
 import { BenchmarkComparison } from '@/components/performance/BenchmarkComparison';
 import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
 import { TrendChart } from '@/components/performance/TrendChart';
+import { PerformanceMetrics } from '@/components/performance/PerformanceMetrics';
 import { useColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 
 type VisualizationTab = 'overview' | 'advanced' | 'benchmarks';
+type TimeFilter = 'week' | 'month' | 'year' | 'all';
 
 export default function PerformanceScreen() {
   const colors = useColors();
@@ -26,6 +28,7 @@ export default function PerformanceScreen() {
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<VisualizationTab>('overview');
   const [selectedMetric, setSelectedMetric] = useState<'exitVelocity' | 'launchAngle' | 'barrelPercentage'>('exitVelocity');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('week');
 
   // Mock data for trend chart
   const trendData = {
@@ -57,6 +60,34 @@ export default function PerformanceScreen() {
     { exitVelocity: 88, launchAngle: 15 },
     { exitVelocity: 92, launchAngle: 30 },
   ];
+
+  // Mock performance metrics data
+  const performanceMetrics = {
+    exitVelocity: {
+      current: 87,
+      max: 95,
+      average: 85,
+      unit: 'mph'
+    },
+    launchAngle: {
+      current: 15,
+      max: 25,
+      average: 18,
+      unit: '°'
+    },
+    barrelPercentage: {
+      current: 32,
+      max: 45,
+      average: 28,
+      unit: '%'
+    },
+    distance: {
+      current: 350,
+      max: 420,
+      average: 380,
+      unit: 'ft'
+    }
+  };
 
   // Mock benchmark data
   const benchmarkData = {
@@ -122,6 +153,14 @@ export default function PerformanceScreen() {
       case 'overview':
         return (
           <>
+            <PerformanceMetrics
+              exitVelocity={performanceMetrics.exitVelocity}
+              launchAngle={performanceMetrics.launchAngle}
+              barrelPercentage={performanceMetrics.barrelPercentage}
+              distance={performanceMetrics.distance}
+              timeFilter={timeFilter}
+              onFilterChange={setTimeFilter}
+            />
             <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
               <PerformanceMetricSelector 
                 selectedMetric={selectedMetric}
