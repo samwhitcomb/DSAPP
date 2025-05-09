@@ -116,5 +116,3 @@ export function useColors() {
   const { isDark } = useTheme();
   return isDark ? darkColors : lightColors;
 }
-
-export const colors = lightColors; // Keep for backward compatibility
