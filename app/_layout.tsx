@@ -34,6 +34,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   useFrameworkReady();
+  const colors = useColors();
 
   const [fontsLoaded, fontError] = useFonts({
     'Barlow-Regular': Barlow_400Regular,
@@ -50,11 +51,9 @@ export default function RootLayout() {
 
   if (!fontsLoaded && !fontError) {
     return (
-      <ThemeProvider>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading...</Text>
-        </View>
-      </ThemeProvider>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.primary }]}>
+        <Text style={[styles.loadingText, { color: colors.white }]}>Loading...</Text>
+      </View>
     );
   }
 
@@ -70,11 +69,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000', // Fallback color while theme context initializes
   },
   loadingText: {
     fontFamily: 'Barlow-Medium',
     fontSize: 18,
-    color: '#fff', // Fallback color while theme context initializes
   }
 });
