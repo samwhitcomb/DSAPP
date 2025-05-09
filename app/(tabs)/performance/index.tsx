@@ -10,14 +10,14 @@ import { SprayChart } from '@/components/performance/SprayChart';
 import { LaunchAngleChart } from '@/components/performance/LaunchAngleChart';
 import { SessionComparisonModal } from '@/components/performance/SessionComparisonModal';
 import { BenchmarkComparison } from '@/components/performance/BenchmarkComparison';
-import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
-import { TrendChart } from '@/components/performance/TrendChart';
 import { PerformanceMetrics } from '@/components/performance/PerformanceMetrics';
+import { TrendChart } from '@/components/performance/TrendChart';
 import { useColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 
 type VisualizationTab = 'overview' | 'advanced' | 'benchmarks';
 type TimeFilter = 'week' | 'month' | 'year' | 'all';
+type MetricType = 'exitVelocity' | 'launchAngle' | 'barrelPercentage' | 'distance';
 
 export default function PerformanceScreen() {
   const colors = useColors();
@@ -27,7 +27,7 @@ export default function PerformanceScreen() {
   const [comparisonVisible, setComparisonVisible] = useState(false);
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<VisualizationTab>('overview');
-  const [selectedMetric, setSelectedMetric] = useState<'exitVelocity' | 'launchAngle' | 'barrelPercentage'>('exitVelocity');
+  const [selectedMetric, setSelectedMetric] = useState<MetricType>('exitVelocity');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('week');
 
   // Mock data for trend chart
@@ -35,6 +35,7 @@ export default function PerformanceScreen() {
     exitVelocity: [82, 84, 83, 85, 87],
     launchAngle: [12, 13, 15, 14, 15],
     barrelPercentage: [25, 26, 28, 30, 32],
+    distance: [320, 340, 335, 350, 360],
   };
 
   // Mock data for radar chart
@@ -159,13 +160,11 @@ export default function PerformanceScreen() {
               barrelPercentage={performanceMetrics.barrelPercentage}
               distance={performanceMetrics.distance}
               timeFilter={timeFilter}
+              selectedMetric={selectedMetric}
               onFilterChange={setTimeFilter}
+              onMetricChange={setSelectedMetric}
             />
             <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
-              <PerformanceMetricSelector 
-                selectedMetric={selectedMetric}
-                onSelectMetric={setSelectedMetric}
-              />
               <TrendChart data={trendData[selectedMetric]} metric={selectedMetric} />
             </View>
             <View style={[styles.chartContainer, { backgroundColor: colors.white }]}>
@@ -255,7 +254,7 @@ export default function PerformanceScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsHorizontalScrollIndicator={false}>
         {renderTabContent()}
 
         <View style={styles.sessionsHeader}>

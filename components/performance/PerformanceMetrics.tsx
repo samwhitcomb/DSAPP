@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useColors } from '@/constants/theme';
 import { TrendingUp, Target, Crosshair, Ruler } from 'lucide-react-native';
 
 type TimeFilter = 'week' | 'month' | 'year' | 'all';
+type MetricType = 'exitVelocity' | 'launchAngle' | 'barrelPercentage' | 'distance';
 
 interface MetricData {
   current: number;
@@ -17,7 +18,9 @@ interface PerformanceMetricsProps {
   barrelPercentage: MetricData;
   distance: MetricData;
   timeFilter: TimeFilter;
+  selectedMetric: MetricType;
   onFilterChange: (filter: TimeFilter) => void;
+  onMetricChange: (metric: MetricType) => void;
 }
 
 export function PerformanceMetrics({
@@ -26,94 +29,101 @@ export function PerformanceMetrics({
   barrelPercentage,
   distance,
   timeFilter,
+  selectedMetric,
   onFilterChange,
+  onMetricChange,
 }: PerformanceMetricsProps) {
   const colors = useColors();
 
-  const MetricCard = ({ title, data, icon }: { title: string; data: MetricData; icon: React.ReactNode }) => (
-    <View style={[styles.metricCard, { backgroundColor: colors.white }]}>
-      <View style={styles.metricHeader}>
-        {icon}
-        <Text style={[styles.metricTitle, { color: colors.grey[600] }]}>{title}</Text>
+  const metrics = [
+    { type: 'exitVelocity', title: 'Exit Velocity', data: exitVelocity, icon: <TrendingUp size={20} color={colors.primary} /> },
+    { type: 'launchAngle', title: 'Launch Angle', data: launchAngle, icon: <Target size={20} color={colors.primary} /> },
+    { type: 'barrelPercentage', title: 'Barrel %', data: barrelPercentage, icon: <Crosshair size={20} color={colors.primary} /> },
+    { type: 'distance', title: 'Distance', data: distance, icon: <Ruler size={20} color={colors.primary} /> },
+  ] as const;
+
+  const MetricCard = ({ data }: { data: MetricData }) => (
+    <View style={[styles.metricValues, { backgroundColor: colors.white }]}>
+      <View style={styles.metricValue}>
+        <Text style={[styles.valueLabel, { color: colors.grey[400] }]}>Current</Text>
+        <Text style={[styles.value, { color: colors.primary }]}>
+          {data.current}
+          <Text style={[styles.unit, { color: colors.grey[400] }]}>{data.unit}</Text>
+        </Text>
       </View>
-      
-      <View style={styles.metricValues}>
-        <View style={styles.metricValue}>
-          <Text style={[styles.valueLabel, { color: colors.grey[400] }]}>Current</Text>
-          <Text style={[styles.value, { color: colors.primary }]}>
-            {data.current}
-            <Text style={[styles.unit, { color: colors.grey[400] }]}>{data.unit}</Text>
-          </Text>
-        </View>
 
-        <View style={styles.metricValue}>
-          <Text style={[styles.valueLabel, { color: colors.grey[400] }]}>Max</Text>
-          <Text style={[styles.value, { color: colors.status.success }]}>
-            {data.max}
-            <Text style={[styles.unit, { color: colors.grey[400] }]}>{data.unit}</Text>
-          </Text>
-        </View>
+      <View style={styles.metricValue}>
+        <Text style={[styles.valueLabel, { color: colors.grey[400] }]}>Max</Text>
+        <Text style={[styles.value, { color: colors.status.success }]}>
+          {data.max}
+          <Text style={[styles.unit, { color: colors.grey[400] }]}>{data.unit}</Text>
+        </Text>
+      </View>
 
-        <View style={styles.metricValue}>
-          <Text style={[styles.valueLabel, { color: colors.grey[400] }]}>Average</Text>
-          <Text style={[styles.value, { color: colors.secondary.indigo }]}>
-            {data.average}
-            <Text style={[styles.unit, { color: colors.grey[400] }]}>{data.unit}</Text>
-          </Text>
-        </View>
+      <View style={styles.metricValue}>
+        <Text style={[styles.valueLabel, { color: colors.grey[400] }]}>Average</Text>
+        <Text style={[styles.value, { color: colors.secondary.indigo }]}>
+          {data.average}
+          <Text style={[styles.unit, { color: colors.grey[400] }]}>{data.unit}</Text>
+        </Text>
       </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.grey[600] }]}>Performance Metrics</Text>
-        <View style={styles.filters}>
-          {(['week', 'month', 'year', 'all'] as TimeFilter[]).map((filter) => (
-            <TouchableOpacity
-              key={filter}
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        style={styles.tabScroll}
+        contentContainerStyle={styles.tabContainer}
+      >
+        {metrics.map((metric) => (
+          <TouchableOpacity
+            key={metric.type}
+            style={[
+              styles.tab,
+              selectedMetric === metric.type && styles.selectedTab,
+              { backgroundColor: selectedMetric === metric.type ? colors.primary : colors.grey[100] }
+            ]}
+            onPress={() => onMetricChange(metric.type)}
+          >
+            {metric.icon}
+            <Text
               style={[
-                styles.filterButton,
-                timeFilter === filter && { backgroundColor: colors.primary }
+                styles.tabText,
+                { color: selectedMetric === metric.type ? colors.white : colors.grey[600] }
               ]}
-              onPress={() => onFilterChange(filter)}
             >
-              <Text
-                style={[
-                  styles.filterText,
-                  timeFilter === filter ? { color: colors.white } : { color: colors.grey[500] }
-                ]}
-              >
-                {filter.charAt(0).toUpperCase() + filter.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+              {metric.title}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <View style={styles.filters}>
+        {(['week', 'month', 'year', 'all'] as TimeFilter[]).map((filter) => (
+          <TouchableOpacity
+            key={filter}
+            style={[
+              styles.filterButton,
+              timeFilter === filter && { backgroundColor: colors.primary }
+            ]}
+            onPress={() => onFilterChange(filter)}
+          >
+            <Text
+              style={[
+                styles.filterText,
+                timeFilter === filter ? { color: colors.white } : { color: colors.grey[500] }
+              ]}
+            >
+              {filter.charAt(0).toUpperCase() + filter.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
-      <View style={styles.metricsGrid}>
-        <MetricCard
-          title="Exit Velocity"
-          data={exitVelocity}
-          icon={<TrendingUp size={20} color={colors.primary} />}
-        />
-        <MetricCard
-          title="Launch Angle"
-          data={launchAngle}
-          icon={<Target size={20} color={colors.primary} />}
-        />
-        <MetricCard
-          title="Barrel %"
-          data={barrelPercentage}
-          icon={<Crosshair size={20} color={colors.primary} />}
-        />
-        <MetricCard
-          title="Distance"
-          data={distance}
-          icon={<Ruler size={20} color={colors.primary} />}
-        />
-      </View>
+      <MetricCard data={metrics.find(m => m.type === selectedMetric)!.data} />
     </View>
   );
 }
@@ -122,17 +132,36 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
-  header: {
+  tabScroll: {
     marginBottom: 16,
   },
-  title: {
-    fontFamily: 'Barlow-Bold',
-    fontSize: 18,
-    marginBottom: 12,
+  tabContainer: {
+    paddingRight: 16,
+  },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginRight: 8,
+    gap: 8,
+  },
+  selectedTab: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  tabText: {
+    fontFamily: 'Barlow-Medium',
+    fontSize: 14,
   },
   filters: {
     flexDirection: 'row',
     gap: 8,
+    marginBottom: 16,
   },
   filterButton: {
     paddingVertical: 6,
@@ -144,10 +173,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Barlow-Medium',
     fontSize: 14,
   },
-  metricsGrid: {
-    gap: 16,
-  },
-  metricCard: {
+  metricValues: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',
@@ -155,20 +183,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
-  },
-  metricHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    gap: 8,
-  },
-  metricTitle: {
-    fontFamily: 'Barlow-SemiBold',
-    fontSize: 16,
-  },
-  metricValues: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   metricValue: {
     alignItems: 'center',
