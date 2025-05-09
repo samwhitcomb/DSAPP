@@ -5,40 +5,16 @@ import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts, Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold } from '@expo-google-fonts/barlow';
 import { View, Text, StyleSheet } from 'react-native';
 import { SplashScreen } from 'expo-router';
-import { colors } from '@/constants/theme';
+import { useColors } from '@/constants/theme';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
-// Prevent the splash screen from auto-hiding
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  useFrameworkReady();
-
-  const [fontsLoaded, fontError] = useFonts({
-    'Barlow-Regular': Barlow_400Regular,
-    'Barlow-Medium': Barlow_500Medium,
-    'Barlow-SemiBold': Barlow_600SemiBold,
-    'Barlow-Bold': Barlow_700Bold,
-  });
-
-  // Hide splash screen once fonts are loaded
-  useEffect(() => {
-    if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  // If fonts are not loaded and there is no error, show a loading screen
-  if (!fontsLoaded && !fontError) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
+function RootLayoutNav() {
+  const colors = useColors();
+  const { isDark } = useTheme();
 
   return (
-    <ThemeProvider>
+    <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen 
@@ -51,7 +27,39 @@ export default function RootLayout() {
         />
         <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
       </Stack>
-      <StatusBar style="light" />
+      <StatusBar style={isDark ? "light" : "dark"} />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  useFrameworkReady();
+  const colors = useColors();
+
+  const [fontsLoaded, fontError] = useFonts({
+    'Barlow-Regular': Barlow_400Regular,
+    'Barlow-Medium': Barlow_500Medium,
+    'Barlow-SemiBold': Barlow_600SemiBold,
+    'Barlow-Bold': Barlow_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: colors.primary }]}>
+        <Text style={[styles.loadingText, { color: colors.white }]}>Loading...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <ThemeProvider>
+      <RootLayoutNav />
     </ThemeProvider>
   );
 }
@@ -61,11 +69,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.primary,
   },
   loadingText: {
     fontFamily: 'Barlow-Medium',
     fontSize: 18,
-    color: colors.white,
   }
 });

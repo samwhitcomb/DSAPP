@@ -1,18 +1,21 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
-import { colors, typography } from '@/constants/theme';
+import { useColors, typography } from '@/constants/theme';
 import { SettingsMenuItem } from '@/components/settings/SettingsMenuItem';
 
 export default function ThemeScreen() {
   const { theme, setTheme } = useTheme();
+  const colors = useColors();
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]}>
       <View style={styles.content}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Theme Preferences</Text>
-          <View style={styles.sectionContent}>
+          <Text style={[styles.sectionTitle, { color: colors.grey[400] }]}>
+            Theme Preferences
+          </Text>
+          <View style={[styles.sectionContent, { backgroundColor: colors.white }]}>
             <SettingsMenuItem
               title="System"
               onPress={() => setTheme('system')}
@@ -41,7 +44,6 @@ export default function ThemeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.grey[50],
   },
   content: {
     flex: 1,
@@ -51,12 +53,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...typography.caption,
-    color: colors.grey[400],
     textTransform: 'uppercase',
     marginLeft: 16,
     marginBottom: 8,
   },
   sectionContent: {
-    backgroundColor: colors.white,
+    backgroundColor: 'white',
   },
 });

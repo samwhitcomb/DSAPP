@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronRight, Check } from 'lucide-react-native';
-import { colors, typography } from '@/constants/theme';
+import { useColors, typography } from '@/constants/theme';
 
 interface SettingsMenuItemProps {
   icon?: React.ReactNode;
@@ -23,12 +23,15 @@ export function SettingsMenuItem({
   isHeader = false,
   selected = false,
 }: SettingsMenuItemProps) {
+  const colors = useColors();
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
         isHeader && styles.headerContainer,
-        destructive && styles.destructiveContainer
+        destructive && styles.destructiveContainer,
+        { backgroundColor: colors.white, borderBottomColor: colors.grey[100] }
       ]}
       onPress={onPress}
     >
@@ -36,7 +39,8 @@ export function SettingsMenuItem({
         {icon && (
           <View style={[
             styles.iconContainer,
-            destructive && styles.destructiveIcon
+            destructive && styles.destructiveIcon,
+            { backgroundColor: colors.grey[50] }
           ]}>
             {icon}
           </View>
@@ -44,12 +48,14 @@ export function SettingsMenuItem({
         <View style={styles.textContainer}>
           <Text style={[
             styles.title,
-            destructive && styles.destructiveText
+            destructive ? { color: colors.status.error } : { color: colors.grey[600] }
           ]}>
             {title}
           </Text>
           {subtitle && (
-            <Text style={styles.subtitle}>{subtitle}</Text>
+            <Text style={[styles.subtitle, { color: colors.grey[400] }]}>
+              {subtitle}
+            </Text>
           )}
         </View>
       </View>
@@ -69,12 +75,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 16,
     paddingHorizontal: 16,
-    backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: colors.grey[100],
   },
   headerContainer: {
-    backgroundColor: colors.grey[50],
     borderBottomWidth: 0,
   },
   content: {
@@ -86,30 +89,22 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: colors.grey[50],
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   destructiveIcon: {
-    backgroundColor: colors.status.error + '10',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
   },
   textContainer: {
     flex: 1,
   },
   title: {
     ...typography.body1,
-    color: colors.grey[600],
   },
   subtitle: {
     ...typography.caption,
-    color: colors.grey[400],
     marginTop: 2,
   },
-  destructiveText: {
-    color: colors.status.error,
-  },
-  destructiveContainer: {
-    backgroundColor: colors.white,
-  },
+  destructiveContainer: {},
 });
