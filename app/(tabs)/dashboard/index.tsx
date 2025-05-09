@@ -52,6 +52,10 @@ export default function DashboardScreen() {
     }
   ];
 
+  const handleStartSession = () => {
+    router.push('/session');
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -198,7 +202,7 @@ export default function DashboardScreen() {
         <View style={styles.startSessionContainer}>
           <TouchableOpacity 
             style={styles.startSessionButton}
-            onPress={() => router.push('/practice')}
+            onPress={handleStartSession}
           >
             <Play size={24} color={colors.white} />
             <Text style={styles.startSessionText}>Start Session</Text>
