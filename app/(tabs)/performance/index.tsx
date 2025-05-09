@@ -7,11 +7,14 @@ import { SessionCard } from '@/components/performance/SessionCard';
 import { FilterMenu } from '@/components/performance/FilterMenu';
 import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
 import { TrendChart } from '@/components/performance/TrendChart';
-import { colors, typography } from '@/constants/theme';
+import { useColors, typography } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type MetricType = 'exitVelocity' | 'launchAngle' | 'barrelPercentage';
 
 export default function PerformanceScreen() {
+  const colors = useColors();
+  const { isDark } = useTheme();
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterType, setFilterType] = useState('All');
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('exitVelocity');
@@ -85,12 +88,10 @@ export default function PerformanceScreen() {
     },
   ];
   
-  // Filter sessions based on type
   const filteredSessions = filterType === 'All' 
     ? sessions 
     : sessions.filter(session => session.type === filterType);
     
-  // Mock trend data
   const trendData = {
     exitVelocity: [82, 84, 83, 85, 87],
     launchAngle: [12, 13, 15, 14, 15],
@@ -98,24 +99,24 @@ export default function PerformanceScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.grey[50] }]} edges={['top']}>
+      <StatusBar style={isDark ? "light" : "dark"} />
       <View style={styles.header}>
-        <Text style={typography.h1}>Performance</Text>
+        <Text style={[typography.h1, { color: colors.grey[600] }]}>Performance</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity 
-            style={styles.iconButton}
+            style={[styles.iconButton, { backgroundColor: colors.grey[100] }]}
             onPress={() => setFilterVisible(true)}
           >
             <Filter size={20} color={colors.grey[600]} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.grey[100] }]}>
             <Calendar size={20} color={colors.grey[600]} />
           </TouchableOpacity>
         </View>
       </View>
       
-      <View style={styles.trendContainer}>
+      <View style={[styles.trendContainer, { backgroundColor: colors.white }]}>
         <PerformanceMetricSelector 
           selectedMetric={selectedMetric}
           onSelectMetric={setSelectedMetric}
@@ -124,9 +125,9 @@ export default function PerformanceScreen() {
       </View>
       
       <View style={styles.sessionsHeader}>
-        <Text style={styles.sessionsTitle}>Session History</Text>
+        <Text style={[styles.sessionsTitle, { color: colors.grey[600] }]}>Session History</Text>
         <TouchableOpacity style={styles.analysisButton}>
-          <Text style={styles.analysisText}>Analysis Tools</Text>
+          <Text style={[styles.analysisText, { color: colors.primary }]}>Analysis Tools</Text>
           <ChevronRight size={16} color={colors.primary} />
         </TouchableOpacity>
       </View>
@@ -152,7 +153,6 @@ export default function PerformanceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.grey[50],
   },
   header: {
     flexDirection: 'row',
@@ -169,16 +169,14 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: colors.grey[100],
     marginLeft: 8,
   },
   trendContainer: {
-    backgroundColor: colors.white,
     padding: 16,
     marginHorizontal: 16,
     borderRadius: 12,
     marginBottom: 24,
-    shadowColor: colors.grey[600],
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
   },
   sessionsTitle: {
     ...typography.h3,
-    color: colors.grey[600],
   },
   analysisButton: {
     flexDirection: 'row',
@@ -202,7 +199,6 @@ const styles = StyleSheet.create({
   analysisText: {
     fontFamily: 'Barlow-Medium',
     fontSize: 14,
-    color: colors.primary,
   },
   sessionsList: {
     paddingHorizontal: 16,
