@@ -96,7 +96,7 @@ export default function PracticeScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Practice</Text>
+        <Text style={typography.h1}>Practice</Text>
         <TouchableOpacity style={styles.settingsButton}>
           <Settings size={22} color={colors.grey[600]} />
         </TouchableOpacity>
@@ -164,10 +164,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 8,
     paddingBottom: 16,
-  },
-  title: {
-    ...typography.h1,
-    color: colors.grey[600],
   },
   settingsButton: {
     padding: 8,

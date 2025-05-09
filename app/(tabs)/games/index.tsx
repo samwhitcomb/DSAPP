@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GameCard } from '@/components/games/GameCard';
 import { LeaderboardItem } from '@/components/games/LeaderboardItem';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '@/constants/theme';
+import { colors, typography } from '@/constants/theme';
 
 export default function GamesScreen() {
   // Mock games data
@@ -49,7 +49,7 @@ export default function GamesScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Games</Text>
+        <Text style={typography.h1}>Games</Text>
         <TouchableOpacity style={styles.historyButton}>
           <Ionicons name="time-outline" size={20} color={colors.grey[600]} />
           <Text style={styles.historyText}>History</Text>
@@ -122,11 +122,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-  },
-  title: {
-    fontFamily: 'Barlow-Bold',
-    fontSize: 24,
-    color: colors.grey[600],
   },
   historyButton: {
     flexDirection: 'row',

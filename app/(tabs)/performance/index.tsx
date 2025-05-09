@@ -7,7 +7,7 @@ import { SessionCard } from '@/components/performance/SessionCard';
 import { FilterMenu } from '@/components/performance/FilterMenu';
 import { PerformanceMetricSelector } from '@/components/performance/PerformanceMetricSelector';
 import { TrendChart } from '@/components/performance/TrendChart';
-import { colors } from '@/constants/theme';
+import { colors, typography } from '@/constants/theme';
 
 type MetricType = 'exitVelocity' | 'launchAngle' | 'barrelPercentage';
 
@@ -101,7 +101,7 @@ export default function PerformanceScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Performance</Text>
+        <Text style={typography.h1}>Performance</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity 
             style={styles.iconButton}
@@ -162,11 +162,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 16,
   },
-  title: {
-    fontFamily: 'Barlow-Bold',
-    fontSize: 28,
-    color: colors.grey[600],
-  },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -197,8 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sessionsTitle: {
-    fontFamily: 'Barlow-SemiBold',
-    fontSize: 18,
+    ...typography.h3,
     color: colors.grey[600],
   },
   analysisButton: {

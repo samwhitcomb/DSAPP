@@ -9,7 +9,7 @@ import { QuickStatsCard } from '@/components/dashboard/QuickStatsCard';
 import { PracticeRecommendation } from '@/components/dashboard/PracticeRecommendation';
 import { HotZoneMap } from '@/components/shared/HotZoneMap';
 import { DeviceManagementModal } from '@/components/device/DeviceManagementModal';
-import { colors } from '@/constants/theme';
+import { colors, typography } from '@/constants/theme';
 
 export default function DashboardScreen() {
   const router = useRouter();
@@ -53,7 +53,7 @@ export default function DashboardScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Dashboard</Text>
+        <Text style={typography.h1}>Dashboard</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity 
             style={styles.iconButton}
@@ -135,11 +135,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-  },
-  headerTitle: {
-    fontFamily: 'Barlow-Bold',
-    fontSize: 28,
-    color: colors.grey[600],
   },
   headerButtons: {
     flexDirection: 'row',
