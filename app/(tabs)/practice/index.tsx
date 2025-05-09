@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Play, Settings } from 'lucide-react-native';
+import { Play, Clock } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import { PracticeCard } from '@/components/practice/PracticeCard';
 import { SessionSetupModal } from '@/components/practice/SessionSetupModal';
 import { DrillTypeSelector } from '@/components/practice/DrillTypeSelector';
@@ -14,6 +15,7 @@ export default function PracticeScreen() {
   const [guideModalVisible, setGuideModalVisible] = useState(false);
   const [selectedDrillType, setSelectedDrillType] = useState('skill');
   const [selectedDrill, setSelectedDrill] = useState(null);
+  const router = useRouter();
   
   // Mock drill data
   const skillDrills = [
@@ -97,8 +99,12 @@ export default function PracticeScreen() {
       <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={typography.h1}>Practice</Text>
-        <TouchableOpacity style={styles.settingsButton}>
-          <Settings size={22} color={colors.grey[600]} />
+        <TouchableOpacity 
+          style={styles.historyButton}
+          onPress={() => router.push('/session-history/practice')}
+        >
+          <Clock size={20} color={colors.grey[600]} />
+          <Text style={styles.historyText}>History</Text>
         </TouchableOpacity>
       </View>
       
@@ -165,10 +171,18 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 16,
   },
-  settingsButton: {
+  historyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     padding: 8,
     borderRadius: 8,
     backgroundColor: colors.grey[100],
+  },
+  historyText: {
+    fontFamily: 'Barlow-Medium',
+    fontSize: 14,
+    color: colors.grey[600],
   },
   scrollContainer: {
     flex: 1,
